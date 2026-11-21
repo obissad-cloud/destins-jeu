@@ -6475,6 +6475,7 @@ const PACKS = [
     { id: "destins", produit: "destins_pack_destins", emoji: "📜", nom: "Pack Destins écrits", description: "4 vies guidées supplémentaires, chapitre par chapitre.", prix: { EUR: 1.99, USD: 1.99, XOF: 1000 }, contenu: ["destin:reine_wax", "destin:genie_nairobi", "destin:terrain_dakar", "destin:diaspora_abidjan"] },
     { id: "pouvoirs", produit: "destins_pack_pouvoirs", emoji: "⏳", nom: "Pack Pouvoirs", description: "Machine à remonter le temps et mode Dieu (modifier son personnage).", prix: { EUR: 2.99, USD: 2.99, XOF: 1500 }, contenu: ["fonction:temps", "fonction:dieu"] },
     { id: "talents", produit: "destins_pack_talents", emoji: "🌟", nom: "Pack Talents", description: "Choisis le talent de ton personnage dès la naissance : génie, beauté, charisme, sport et tous les autres.", prix: { EUR: 4.99, USD: 4.99, XOF: 2500 }, contenu: ["fonction:talent"] },
+    { id: "sans_pub", produit: "destins_pack_sans_pub", emoji: "🚫", nom: "Sans publicité", description: "Plus aucune pub automatique pendant tes vies. Les pubs à récompense restent disponibles si tu en veux.", prix: { EUR: 2.99, USD: 2.99, XOF: 1500 }, contenu: ["fonction:sans_pub"] },
     { id: "complet", produit: "destins_pack_complet", emoji: "👑", nom: "Destins Complet", description: "Tous les packs actuels et futurs, en un seul achat.", prix: { EUR: 7.99, USD: 7.99, XOF: 4000 }, contenu: ["*"] },
 ];
 // Ce qui reste gratuit pour tout le monde
@@ -6988,9 +6989,9 @@ const STATS = (function(){
 const CONFIG_ACHATS = {
   // Web : liens de paiement Stripe (un par produit), à créer dans le tableau de bord Stripe.
   // Le lien doit rediriger vers  https://TON-SITE/?session_id={CHECKOUT_SESSION_ID}
-  stripe: { destins_pack_vikings: "https://buy.stripe.com/6oU00j0V68RT4p52wteEo05", destins_pack_prohibition: "https://buy.stripe.com/dRm00j9rC0ln7Bh7QNeEo02", destins_pack_yakuza: "https://buy.stripe.com/7sY00jbzK2tvf3Jdb7eEo03", destins_pack_destins: "https://buy.stripe.com/14A28r0V68RTaNt5IFeEo01", destins_pack_pouvoirs: "https://buy.stripe.com/fZufZh47i3xzcVB8UReEo04", destins_pack_talents: "https://buy.stripe.com/4gM3cv8ny9VX8Fl1speEo06", destins_pack_complet: "https://buy.stripe.com/28E9AT6fq7NP3l10oleEo00" },
+  stripe: { destins_pack_vikings: "https://buy.stripe.com/6oU00j0V68RT4p52wteEo05", destins_pack_prohibition: "https://buy.stripe.com/dRm00j9rC0ln7Bh7QNeEo02", destins_pack_yakuza: "https://buy.stripe.com/7sY00jbzK2tvf3Jdb7eEo03", destins_pack_destins: "https://buy.stripe.com/14A28r0V68RTaNt5IFeEo01", destins_pack_pouvoirs: "https://buy.stripe.com/fZufZh47i3xzcVB8UReEo04", destins_pack_talents: "https://buy.stripe.com/4gM3cv8ny9VX8Fl1speEo06", destins_pack_sans_pub: "https://buy.stripe.com/7sY6oH8nyecd1cTdb7eEo07", destins_pack_complet: "https://buy.stripe.com/28E9AT6fq7NP3l10oleEo00" },
   verifierUrl: "/api/verifier",           // fonction serveur (launch/web/api/verifier.js) qui confirme le paiement auprès de Stripe
-  steamDlc: { destins_pack_vikings: 0, destins_pack_prohibition: 0, destins_pack_yakuza: 0, destins_pack_destins: 0, destins_pack_pouvoirs: 0, destins_pack_talents: 0, destins_pack_complet: 0 }, // numéros des DLC Steam
+  steamDlc: { destins_pack_vikings: 0, destins_pack_prohibition: 0, destins_pack_yakuza: 0, destins_pack_destins: 0, destins_pack_pouvoirs: 0, destins_pack_talents: 0, destins_pack_sans_pub: 0, destins_pack_complet: 0 }, // numéros des DLC Steam
 };
 const ACHATS = (function(){
   const CLE = "destins.droits";
@@ -8338,12 +8339,12 @@ function arbreFamille(depuisMort){
 
   const anglais = () => { try { return I18N.langue === "en"; } catch (e) { return false; } };
   const T = (fr, en) => anglais() ? en : fr;
-  const payant = () => { try { return typeof ACHATS !== "undefined" && ACHATS.droits.length > 0; } catch (e) { return false; } };
+  const payant = () => { try { return typeof ACHATS !== "undefined" && ACHATS.aAcces("fonction:sans_pub"); } catch (e) { return false; } };
   const pause = () => { try { MUSIQUE.arreter(); } catch (e) {} };
   const reprise = () => { try { if (REGLAGES.get("musique")) MUSIQUE.demarrer(ambianceActuelle()); } catch (e) {} };
   const jeu = () => { try { return partie; } catch (e) { return null; } };
 
-  // 1) Pub toutes les 10 années (pas pour les joueurs ayant acheté un pack)
+  // 1) Pub toutes les 10 années (sauf Pack Sans publicité ou Complet)
   function brancherDecennie() {
     const b = document.getElementById("btnVieillir");
     if (!b || b.__pub) return;
