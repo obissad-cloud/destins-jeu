@@ -1,7 +1,7 @@
 // Cloudflare Pages Function : confirme auprès de Stripe qu'un paiement a bien eu lieu, puis indique le pack acheté.
 // Variable d'environnement à définir sur Cloudflare : STRIPE_SECRET_KEY (clé secrète, jamais dans le jeu).
 // Accepte aussi les achats faits depuis itch.io (client_reference_id = "<jeton>-<produit>").
-const PRODUITS = new Set(["destins_pack_vikings", "destins_pack_prohibition", "destins_pack_yakuza", "destins_pack_destins", "destins_pack_pouvoirs", "destins_pack_talents", "destins_pack_sans_pub", "destins_pack_complet"]);
+const PRODUITS = new Set(["destins_pack_vikings", "destins_pack_prohibition", "destins_pack_yakuza", "destins_pack_decouverte", "destins_pack_destins", "destins_pack_pouvoirs", "destins_pack_talents", "destins_pack_sans_pub", "destins_pack_complet"]);
 const rep = (o, s = 200) => new Response(JSON.stringify(o), { status: s, headers: { "Content-Type": "application/json", "Cache-Control": "no-store", "Access-Control-Allow-Origin": "*" } });
 export async function onRequestGet({ request, env }) {
   const sid = new URL(request.url).searchParams.get("session_id") || "";

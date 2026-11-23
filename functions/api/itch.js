@@ -1,6 +1,6 @@
 // Cloudflare Pages Function (version itch.io) : retrouve les paiements Stripe faits avec le jeton d'un joueur.
 // Le jeu itch.io ouvre le lien Stripe avec client_reference_id = "<jeton>-<produit>", puis interroge cette adresse.
-const PRODUITS = new Set(["destins_pack_vikings", "destins_pack_prohibition", "destins_pack_yakuza", "destins_pack_destins", "destins_pack_pouvoirs", "destins_pack_talents", "destins_pack_sans_pub", "destins_pack_complet"]);
+const PRODUITS = new Set(["destins_pack_vikings", "destins_pack_prohibition", "destins_pack_yakuza", "destins_pack_decouverte", "destins_pack_destins", "destins_pack_pouvoirs", "destins_pack_talents", "destins_pack_sans_pub", "destins_pack_complet"]);
 const ENTETES = { "Content-Type": "application/json", "Cache-Control": "no-store", "Access-Control-Allow-Origin": "*" };
 const rep = (o, s = 200) => new Response(JSON.stringify(o), { status: s, headers: ENTETES });
 export async function onRequestOptions() { return new Response(null, { status: 204, headers: { ...ENTETES, "Access-Control-Allow-Methods": "GET", "Access-Control-Allow-Headers": "*" } }); }
